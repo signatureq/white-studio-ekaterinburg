@@ -15,7 +15,6 @@
       if (typeof config[key] !== 'string' || !config[key].startsWith('https://')) continue;
       const a = document.createElement('a'); a.href = config[key]; a.textContent = label; a.className = 'text-link contact-external'; a.target = '_blank'; a.rel = 'noopener noreferrer'; contactDetails.append(a);
     }
-    $('.contact-status').textContent = 'Ждём вас в студии';
   }
   const bookingDialog = $('#booking-dialog');
   const bookingForm = $('#booking-form');
@@ -130,7 +129,7 @@
       return;
     }
     const title = services[data.get('service')]?.title || 'Консультация';
-    const draft = ['WHITE STUDIO — черновик запроса', 'ВАЖНО: этот запрос не отправлен в студию.', '', `Имя: ${name}`, `Телефон: ${phone}`, `Автомобиль: ${car}`, `Услуга: ${title}`, `Комментарий: ${String(data.get('comment')).trim() || 'Не указан'}`, '', 'Доступность услуги и стоимость нужно согласовать со студией.'].join('\n');
+    const draft = ['WHITE STUDIO — запрос', '', `Имя: ${name}`, `Телефон: ${phone}`, `Автомобиль: ${car}`, `Услуга: ${title}`, `Комментарий: ${String(data.get('comment')).trim() || 'Не указан'}`, '', 'Состав работ и итоговая стоимость определяются после осмотра автомобиля.'].join('\n');
     if (draftUrl) URL.revokeObjectURL(draftUrl);
     draftUrl = URL.createObjectURL(new Blob(['\uFEFF' + draft], { type: 'text/plain;charset=utf-8' }));
     $('#download-draft').href = draftUrl;
