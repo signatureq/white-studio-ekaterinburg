@@ -1,0 +1,63 @@
+/* Quiet motion supports the studio photographs and acknowledges interactions. */
+:root {
+  --motion-feedback: 180ms;
+  --motion-state: 260ms;
+}
+
+.button {
+  transition: background-color var(--motion-feedback), color var(--motion-feedback),
+    border-color var(--motion-feedback), transform var(--motion-feedback) var(--ease);
+}
+.button:active { transform: translateY(1px); }
+.button svg, .text-link svg, .service-more svg,
+.project-card-title svg, .related-service svg {
+  transition: transform var(--motion-state) var(--ease);
+}
+.service-card h2 a, .service-card h3 a, .project-card h3,
+.related-service > span:first-child, .page-breadcrumb a {
+  transition: color var(--motion-feedback);
+}
+.icon-button { transition: background-color var(--motion-feedback); }
+
+@media (hover: hover) and (pointer: fine) {
+  .button:hover svg, .text-link:hover svg, .service-more:hover svg,
+  .project-card:hover .project-card-title svg, .related-service:hover svg {
+    transform: translateX(3px);
+  }
+}
+.button:focus-visible svg, .text-link:focus-visible svg,
+.service-more:focus-visible svg, .project-card:focus-visible .project-card-title svg,
+.related-service:focus-visible svg { transform: translateX(3px); }
+
+.mobile-nav:not([hidden]) { animation: menu-arrive var(--motion-state) var(--ease); }
+dialog[open] { animation: dialog-arrive 300ms var(--ease); }
+dialog[open]::backdrop { animation: backdrop-arrive 220ms ease-out; }
+.form-success:not([hidden]) { animation: response-arrive var(--motion-state) var(--ease); }
+
+@keyframes menu-arrive {
+  from { opacity: .65; transform: translateY(-6px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+@keyframes dialog-arrive {
+  from { opacity: .6; transform: translateY(10px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+@keyframes backdrop-arrive {
+  from { opacity: .7; }
+  to { opacity: 1; }
+}
+@keyframes response-arrive {
+  from { opacity: .6; transform: translateY(6px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  /* Retain gentle color feedback; all entrances and spatial movement are omitted. */
+  .button, .filter, .text-link, .icon-button, .desktop-nav a,
+  .service-card, .service-card h2 a, .service-card h3 a, .project-card h3,
+  .related-service > span:first-child, .page-breadcrumb a {
+    transition: background-color 120ms, color 120ms, border-color 120ms !important;
+  }
+  .button, .button svg, .text-link svg, .service-more svg,
+  .project-card-title svg, .related-service svg { transform: none !important; }
+}
