@@ -15,12 +15,15 @@
 .page-breadcrumb a:hover { color:var(--purple-light); }
 .page-breadcrumb [aria-current] { color:#d6c9e2; }
 .service-page-intro { padding:32px 0 64px; }
-.service-page-opening { max-width:960px;margin-top:38px; }
+.service-page-opening { display:grid;grid-template-columns:minmax(0,1.5fr) minmax(280px,1fr);gap:72px;align-items:center;margin-top:38px; }
 .service-page-lead h1 { font-size:clamp(38px,3.6vw,54px);line-height:1.15; }
 .service-page-lead>p { font-size:17px;line-height:1.7;margin-top:24px;max-width:55ch; }
 .service-page-price { display:inline-block;margin-top:26px;color:var(--purple-light);font-size:30px;font-weight:600;font-variant-numeric:tabular-nums; }
 .service-page-lead p.service-cost-note { margin-top:6px;font-size:13px; }
 .service-page-lead .button { margin-top:25px; }
+.service-benefits { list-style:none;margin:0;padding:0;border-top:1px solid var(--line); }
+.service-benefits li { display:flex;align-items:center;gap:18px;min-height:88px;padding:22px 0;border-bottom:1px solid var(--line);font-size:17px;line-height:1.55; }
+.service-benefits svg { width:22px;height:22px;color:var(--purple-light); }
 .service-page-content { background:#121115;padding:64px 0;border-top:1px solid var(--line); }
 .service-page-columns { display:grid;grid-template-columns:1.4fr 1fr;gap:110px;align-items:start; }
 .service-reading h2 { font-size:30px;margin-top:42px; }
@@ -67,10 +70,27 @@
 .album-photo figcaption { display:flex;justify-content:space-between;align-items:center;gap:20px;margin-top:9px;color:var(--muted);font-size:13px; }
 .album-photo .text-link { font-size:12px;gap:12px;color:#d4bdf4; }
 .album-photo .text-link svg { height:17px;width:17px; }
+.reviews-heading p { margin-top:16px; }
+.reviews-heading .button { flex-shrink:0; }
+.reviews-list { display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:32px; }
+.review-item { margin:0;padding-top:28px;border-top:1px solid var(--line);min-width:0; }
+.review-item figcaption { display:flex;flex-direction:column;gap:6px; }
+.review-item figcaption strong { font-size:18px;font-weight:600;line-height:1.4; }
+.review-item figcaption>span { font-size:13px;color:var(--muted); }
+.review-rating { display:flex;gap:4px;margin-top:18px;color:var(--purple-light); }
+.review-rating svg { width:18px;height:18px;fill:currentColor;stroke:none; }
+.review-item blockquote { margin:20px 0 0; }
+.review-item blockquote p { color:var(--white);font-size:15px;line-height:1.8; }
+.review-item blockquote p+p { margin-top:12px; }
 @media(max-width:1180px) {
+  .service-page-opening { gap:48px; }
   .service-page-columns { gap:58px; }
 }
 @media(max-width:980px) {
+  .service-page-opening { grid-template-columns:1fr;gap:32px; }
+  .service-benefits { display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:24px; }
+  .service-benefits li { align-items:flex-start;gap:12px; }
+  .service-benefits svg { margin-top:3px; }
   .service-page-lead h1 { max-width:24ch; }
   .service-page-columns { grid-template-columns:1fr;gap:44px; }
   .service-consultation { max-width:640px; }
@@ -81,6 +101,9 @@
   .service-page-intro { padding:22px 0 36px; }
   .page-breadcrumb { font-size:12px;gap:4px 9px; }
   .service-page-opening { margin-top:24px; }
+  .service-benefits { display:block; }
+  .service-benefits li { min-height:72px;padding:20px 0;font-size:16px;align-items:center; }
+  .service-benefits svg { margin-top:0; }
   .service-page-lead h1 { font-size:clamp(30px,9vw,36px);max-width:100%; }
   .service-page-lead>p { font-size:16px;margin-top:20px; }
   .service-page-price { font-size:28px;margin-top:22px; }
@@ -111,6 +134,9 @@
   .album-photo:first-child { grid-column:auto; }
   .album-photo figcaption { align-items:start;gap:12px;font-size:12px; }
   .album-photo .text-link { gap:7px;white-space:nowrap;font-size:12px; }
+  .reviews-heading .button { margin-top:22px; }
+  .reviews-list { grid-template-columns:1fr;gap:36px; }
+  .review-item { padding-top:24px; }
 }
 
 /* Client-approved presentation: photographs in the catalogue, text inside each service. */
