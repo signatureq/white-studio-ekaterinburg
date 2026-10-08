@@ -6,14 +6,16 @@
   const active = new Map();
   const ease = 'cubic-bezier(0.16, 1, 0.3, 1)';
 
-  function arrive(element, { duration = 560, delay = 0, distance = 0 } = {}) {
+  function arrive(element, { duration = 680, delay = 0, distance = 0, axis = 'y' } = {}) {
     if (preference.matches || !element || element.hidden) return;
     active.get(element)?.cancel();
-    const from = { opacity: .5 };
+    element.dataset.motionEntered = 'true';
+    const from = { opacity: 0 };
     const to = { opacity: 1 };
     if (distance) {
-      from.transform = `translateY(${distance}px)`;
-      to.transform = 'translateY(0)';
+      const translate = axis === 'x' ? 'translateX' : 'translateY';
+      from.transform = `${translate}(${distance}px)`;
+      to.transform = `${translate}(0)`;
     }
     const animation = element.animate([from, to], { duration, delay, easing: ease, fill: 'backwards' });
     active.set(element, animation);
@@ -29,12 +31,23 @@
         entrances.set(element, typeof options === 'function' ? options(index) : options);
       });
     };
-    // The four directions appear as one collection; the total stagger is only 180 ms.
-    add('.home-service-grid .service-card', index => ({ distance: 12, delay: index * 60 }));
-    add('.about-visual', { duration: 640 });
-    add('.about-copy', { duration: 480, distance: 8 });
-    add('.project-card', index => ({ duration: 600, delay: (index % 2) * 80 }));
-    add('.album-photo, .service-page-photo, .catalogue-intro-grid > img', { duration: 640 });
+    // The opening has one finite sequence. Each later element enters only once.
+    add('.hero-brand-line', { duration: 760, distance: 24 });
+    add('.hero-slogan', { duration: 800, delay: 80, distance: 24 });
+    add('.hero-description', { duration: 720, delay: 140, distance: 18 });
+    add('.hero-actions', { duration: 680, delay: 180, distance: 14 });
+    add('.section-heading h2, .about-copy h2, .contacts-copy h2, .reviews-grid h2, .faq-grid h2', { duration: 760, distance: -24, axis: 'x' });
+    add('.catalogue-intro h1, .service-page-lead h1, .project-intro h1', { duration: 760, distance: 24 });
+    add('.about-copy > p', index => ({ duration: 700, distance: 18, delay: Math.min(index * 60, 120) }));
+    add('.about-visual, .album-photo, .catalogue-intro-grid > img', { duration: 800 });
+    add('.service-image', index => ({ duration: 740, delay: (index % 3) * 60 }));
+    add('.service-content h2, .service-content h3', { duration: 660, distance: 16 });
+    // Prices have their own observer targets: a tall mobile card must not reveal
+    // its price before the visitor actually reaches its footer.
+    add('.catalogue-price, .service-page-price', { duration: 720, distance: 18, delay: 80 });
+    add('.service-reading h2', { duration: 600, distance: 14 });
+    add('.project-card', index => ({ duration: 720, delay: (index % 3) * 60 }));
+    add('.contact-address, .contact-phone, .contact-socials', index => ({ duration: 680, distance: 16, delay: index * 60 }));
     observer = new IntersectionObserver(entries => {
       for (const entry of entries) {
         if (!entry.isIntersecting) continue;
@@ -54,7 +67,7 @@
     });
   });
 
-  // Filtering replaces a set of rows, rather than restarting scroll entrances.
+  // Filtering acknowledges the new result set without replaying entered prices.
   let filterFrame;
   function acknowledgeFilter() {
     if (preference.matches) return;

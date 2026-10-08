@@ -4,18 +4,11 @@
   const $$ = (selector, context = document) => Array.from(context.querySelectorAll(selector));
   const services = window.WHITE_STUDIO_SERVICES;
   const config = window.WHITE_STUDIO_CONFIG;
-  const contactDetails = $('#contact-details');
-  if (contactDetails && (config.phone || config.address || config.hours)) {
-    contactDetails.replaceChildren();
-    if (config.address) { const p = document.createElement('p'); p.textContent = config.address; contactDetails.append(p); }
-    if (config.hours) { const p = document.createElement('p'); p.textContent = config.hours; contactDetails.append(p); }
-    if (config.phone) { const a = document.createElement('a'); a.href = 'tel:' + String(config.phone).replace(/[^+\d]/g, ''); a.textContent = config.phone; a.className = 'contact-phone'; contactDetails.append(a); }
-    const links = [['telegram','Telegram'],['whatsapp','WhatsApp'],['mapUrl','Проложить маршрут']];
-    for (const [key,label] of links) {
-      if (typeof config[key] !== 'string' || !config[key].startsWith('https://')) continue;
-      const a = document.createElement('a'); a.href = config[key]; a.textContent = label; a.className = 'text-link contact-external'; a.target = '_blank'; a.rel = 'noopener noreferrer'; contactDetails.append(a);
-    }
-  }
+  $$('[data-contact-link]').forEach(link => {
+    const key = link.dataset.contactLink;
+    if (key === 'phone' && config.phone) link.href = 'tel:' + config.phone.replace(/[^+\d]/g, '');
+    else if (typeof config[key] === 'string' && config[key].startsWith('https://')) link.href = config[key];
+  });
   const bookingDialog = $('#booking-dialog');
   const bookingForm = $('#booking-form');
   let draftUrl = null;
@@ -106,6 +99,42 @@
   $('#reset-search')?.addEventListener('click', () => { $('#service-search').value = ''; applyFilter('all'); $('#service-search').focus(); });
   const initialCategory = new URLSearchParams(location.search).get('category');
   if ($('#service-search') && ['body', 'protection', 'interior', 'style'].includes(initialCategory)) applyFilter(initialCategory);
+
+  const projectSlider = $('#project-slider');
+  if (projectSlider) {
+    const previous = $('[data-project-prev]');
+    const next = $('[data-project-next]');
+    const reducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)');
+    let scrollFrame;
+    const updateControls = () => {
+      const end = projectSlider.scrollWidth - projectSlider.clientWidth;
+      previous.disabled = projectSlider.scrollLeft <= 2;
+      next.disabled = projectSlider.scrollLeft >= end - 2;
+    };
+    const move = direction => {
+      const card = $('.project-card', projectSlider);
+      const step = card.getBoundingClientRect().width + parseFloat(getComputedStyle(projectSlider).columnGap);
+      projectSlider.scrollBy({left:step * direction, behavior:reducedMotion.matches ? 'instant' : 'smooth'});
+    };
+    previous.addEventListener('click', () => move(-1));
+    next.addEventListener('click', () => move(1));
+    projectSlider.addEventListener('scroll', () => {
+      cancelAnimationFrame(scrollFrame);
+      scrollFrame = requestAnimationFrame(updateControls);
+    }, {passive:true});
+    projectSlider.addEventListener('keydown', event => {
+      if (event.target !== projectSlider) return;
+      if (event.key === 'ArrowLeft' || event.key === 'ArrowRight') {
+        event.preventDefault();
+        move(event.key === 'ArrowLeft' ? -1 : 1);
+      } else if (event.key === 'Home' || event.key === 'End') {
+        event.preventDefault();
+        projectSlider.scrollTo({left:event.key === 'Home' ? 0 : projectSlider.scrollWidth, behavior:reducedMotion.matches ? 'instant' : 'smooth'});
+      }
+    });
+    window.addEventListener('resize', updateControls, {passive:true});
+    updateControls();
+  }
 
   const phoneInput = $('input[name="phone"]', bookingForm);
   phoneInput.addEventListener('input', () => {
