@@ -1,17 +1,21 @@
-/* Finite text and price entrances; photographs keep their complete framing. */
+/* Prepare offscreen entrances before they become visible; preserve every photo frame. */
 :root {
   --motion-feedback: 180ms;
   --motion-state: 260ms;
+  --motion-ease: cubic-bezier(0.25, 0.1, 0.25, 1);
 }
+
+[data-motion-pending] { opacity: 0; }
+.hero-photo { animation: none; }
 
 .button {
   transition: background-color var(--motion-feedback), color var(--motion-feedback),
-    border-color var(--motion-feedback), transform var(--motion-feedback) var(--ease);
+    border-color var(--motion-feedback), transform var(--motion-feedback) var(--motion-ease);
 }
 .button:active { transform: translateY(1px); }
 .button svg, .text-link svg, .service-more svg,
 .project-card-open svg, .related-service svg {
-  transition: transform var(--motion-state) var(--ease);
+  transition: transform var(--motion-state) var(--motion-ease);
 }
 .service-card h2 a, .service-card h3 a, .project-card h3,
 .related-service > span:first-child, .page-breadcrumb a {
@@ -29,10 +33,10 @@
 .service-more:focus-visible svg, .project-card:focus-visible .project-card-open svg,
 .related-service:focus-visible svg { transform: translateX(3px); }
 
-.mobile-nav:not([hidden]) { animation: menu-arrive var(--motion-state) var(--ease); }
-dialog[open] { animation: dialog-arrive 300ms var(--ease); }
+.mobile-nav:not([hidden]) { animation: menu-arrive var(--motion-state) var(--motion-ease); }
+dialog[open] { animation: dialog-arrive 300ms var(--motion-ease); }
 dialog[open]::backdrop { animation: backdrop-arrive 220ms ease-out; }
-.form-success:not([hidden]) { animation: response-arrive var(--motion-state) var(--ease); }
+.form-success:not([hidden]) { animation: response-arrive var(--motion-state) var(--motion-ease); }
 
 @keyframes menu-arrive {
   from { opacity: .65; transform: translateY(-6px); }
@@ -53,6 +57,7 @@ dialog[open]::backdrop { animation: backdrop-arrive 220ms ease-out; }
 
 @media (prefers-reduced-motion: reduce) {
   /* Retain gentle color feedback; all entrances and spatial movement are omitted. */
+  [data-motion-pending] { opacity: 1 !important; }
   .button, .filter, .text-link, .icon-button, .desktop-nav a,
   .service-card, .service-card h2 a, .service-card h3 a, .project-card h3,
   .related-service > span:first-child, .page-breadcrumb a {
